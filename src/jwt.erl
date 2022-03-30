@@ -9,6 +9,7 @@
 
 -export([decode/2, decode/3]).
 -export([encode/3, encode/4]).
+-export([decode_jwt/1]).
 
 -define(HOUR, 3600).
 -define(DAY, (?HOUR * 24)).
@@ -136,6 +137,7 @@ reduce_while(Fun, Acc, [Item|Rest]) ->
 
 -spec split_token(Context :: context()) ->
     {cont, context()} | {halt, {error, invalid_token}}.
+
 %% @private
 split_token(#{token := Token} = Context) ->
     case binary:split(Token, <<".">>, [global]) of
@@ -150,7 +152,7 @@ split_token(#{token := Token} = Context) ->
     end.
 
 -spec decode_jwt(context()) -> {cont, context()} | {halt, {error, invalid_token}}.
-%% @private
+
 decode_jwt(#{header := Header, claims := Claims} = Context) ->
     try
         [HeaderJSON, ClaimsJSON] =
